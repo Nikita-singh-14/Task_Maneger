@@ -22,26 +22,26 @@ const AddUser = ({ open, setOpen, userData }) => {
     formState: { errors },
   } = useForm({ defaultValues });
 
-  const  dispatch = useDispatch();
-  const [addNewUser,{isLoading}] = useRegisterMutation();
-  const [updateUser, {isLoading:isUpdating}] = useUpdateUserMutation();
+  const dispatch = useDispatch();
+  const [addNewUser, { isLoading }] = useRegisterMutation();
+  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
 
-  const handleOnSubmit = async(data) => {
+  const handleOnSubmit = async (data) => {
     try {
-      if(userData) {
-        const result = await updateUser(data).unwrap();
+      if (userData) {
+        const result = await updateUser({ ...data, _id: userData._id }).unwrap();
         toast.success("Profile updated successfully");
 
-        if(userData?._id === user?._id){
-          dispatch(setCredentials({...result.user}))
+        if (userData?._id === user?._id) {
+          dispatch(setCredentials({ ...result.user }))
         }
-      }else {
-        await addNewUser({...data, password: data.email}).unwrap();
+      } else {
+        await addNewUser({ ...data, password: data.email }).unwrap();
         toast.success("New User added successfully");
       }
       setTimeout(() => {
         setOpen(false);
-      },2000);
+      }, 2000);
     } catch (error) {
       toast.error(error?.data?.message || "Something went wrong");
     }

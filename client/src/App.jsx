@@ -2,6 +2,7 @@ import { Fragment, useRef, useState } from 'react'
 import { Route, Routes, Outlet, Navigate, useLocation, replace } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Login from './pages/Login'
+import Signup from './pages/Signup'
 import TaskDetails from './pages/TaskDetails';
 import Users from './pages/Users'
 import Tasks from './pages/Tasks'
@@ -16,13 +17,13 @@ import { IoClose } from 'react-icons/io5';
 import { setOpenSidebar } from './redux/slices/authSlice';
 import { useGetNotificationsQuery } from './redux/slices/api/userApiSlice';
 function Layout() {
- 
+
 
   const { user } = useSelector((state) => state.auth);
 
-useGetNotificationsQuery(undefined, {
-  skip: !user,
-});
+  useGetNotificationsQuery(undefined, {
+    skip: !user,
+  });
 
   const location = useLocation()
   return user ? (
@@ -31,7 +32,7 @@ useGetNotificationsQuery(undefined, {
         <Sidebar />
       </div>
 
-      <MobileSidebar/>
+      <MobileSidebar />
 
       <div className='flex-1 overflow-y-auto'>
         <Navbar />
@@ -43,7 +44,7 @@ useGetNotificationsQuery(undefined, {
 
       </div>
     </div>
- ) : (
+  ) : (
     <Navigate to="/log-in" state={{ from: location }} replace />
   );
 
@@ -59,7 +60,7 @@ const MobileSidebar = () => {
     dispatch(setOpenSidebar(false));
   };
 
-  return ( <>
+  return (<>
     <Transition
       show={isSidebarOpen}
       as={Fragment}
@@ -69,31 +70,31 @@ const MobileSidebar = () => {
       leave='transition-opacity duration-700'
       leaveFrom='opacity-100'
       leaveTo='opacity-0'
+    >
+      <div
+        ref={(node) => (mobileMenuRef.current = node)}
+        className={clsx(
+
+          "md:hidden fixed inset-0 z-40 bg-black/40 transition-all duration-500",
+
+          isSidebarOpen ? "translate-x-0" : "translate-x-full"
+        )}
+        onClick={() => closeSidebar()}
       >
-          <div 
-          ref={(node) => (mobileMenuRef.current = node)}
-          className={clsx(
-           
-            "md:hidden fixed inset-0 z-40 bg-black/40 transition-all duration-500",
-
-            isSidebarOpen ? "translate-x-0" : "translate-x-full"
-          )}
-          onClick={() => closeSidebar()}
-          >
-            <div className='bg-white w-3/4 h-full'
-            onClick={(e) => e.stopPropagation()}
-            >
-              <div className='w-full flex justify-end px-5 mt-5'>
-                <button 
-                onClick={() => closeSidebar()}
-                className='flex justify-end items-end'>
-                  <IoClose size={25} />
-                </button>
-              </div>
-
-              <div className='-mt-10'><Sidebar/></div>
-            </div>
+        <div className='bg-white w-3/4 h-full'
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className='w-full flex justify-end px-5 mt-5'>
+            <button
+              onClick={() => closeSidebar()}
+              className='flex justify-end items-end'>
+              <IoClose size={25} />
+            </button>
           </div>
+
+          <div className='-mt-10'><Sidebar /></div>
+        </div>
+      </div>
 
 
     </Transition>
@@ -117,10 +118,11 @@ function App() {
           <Route path='/todo/:status' element={<Tasks />} />
           <Route path='/team' element={<Users />} />
           <Route path='/task/:id' element={<TaskDetails />} />
-          
+
         </Route>
         <Route path='/log-in' element={<Login />} />
-       
+        <Route path='/sign-up' element={<Signup />} />
+
       </Routes>
       <Toaster richColors />
     </main>
